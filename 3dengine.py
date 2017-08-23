@@ -1,12 +1,14 @@
 ﻿import math
 import pygame
 import sys
+import scopescreen
 
 
 class Game:
-    def __init__(self, width=300, height=200):
+    def __init__(self, scopescreen, width=300, height=200):
         pygame.init()
         self.screen = pygame.display.set_mode((width, height))
+        self.scopescreen = scopescreen
         self.cam = Kamera(Punkt(x=0, y=0, z=-5))
 
         self.points = []
@@ -107,7 +109,8 @@ class Game:
             
             # Flächen in Sortierreihenfolge zeichnen
             for fl in flaechen_on_screen:
-                fl.zeichneAuf(self.screen)
+                fl.zeichne_auf_pygamescreen(self.screen)
+                fl.zeichne_auf_scopescreen(self.scopescreen)
 
 
 class Punkt:
@@ -177,14 +180,21 @@ class Flaeche:
         self.farbe = farbe
         self.tiefe = 0
 
-    def zeichneAuf(self, pygame_screen, line_thickness=5):
+    def zeichne_auf_pygamescreen(self, pygame_screen, line_thickness=5):
         pts = []
 
         for p in self.punkte:
             pts.append([int(p.x), int(p.y)])
 
-        # color = (255, 0, 0)
         pygame.draw.polygon(pygame_screen, self.farbe, pts, line_thickness)
+
+    def zeichne_auf_scopescreen(self, scope_scr: scopescreen.ScopeScreen):
+        pts = []
+
+        for p in self.punkt:
+            pts.append([int(p.x), int(p.y)])
+
+        scope_scr.figure(pts)
 
 
 class Kamera:
@@ -221,7 +231,9 @@ class Kamera:
 
 
 def main():
-    screen = Game(width=800, height=600)
+    # init scopescreen with defaults
+    sc = scopescreen.ScopeScreen(x_bus=0, x_device=1, y_bus=0, y_device=0)
+    screen = Game(sc, width=800, height=600)
 
     # start game loop
     clock = pygame.time.Clock()
