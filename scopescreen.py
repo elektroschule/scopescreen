@@ -82,7 +82,8 @@ class ScopeScreen:
             deltafastdirection = int(ady/self.step)
         x = x1
         y = y1
-        self.point(x1,y1)
+        if x1 in range(257) and y1 in range(257):
+            self.point(x1,y1)
         error = deltafastdirection/2
         for i in range(deltafastdirection):
             error = error - deltaslowdirection
@@ -90,15 +91,16 @@ class ScopeScreen:
                 error = error + deltafastdirection
                 x = x + ddx
                 y = y + ddy
-                self.xpoti.spi.xfer([0x00, x], self.xpoti.speed_Hz, 0)
-                self.ypoti.spi.xfer([0x00, y], self.ypoti.speed_Hz, 0)
+                if x in range(257) and y in range(257):
+                    self.xpoti.spi.xfer([0x00+x//256, x%256], self.xpoti.speed_Hz, 0)
+                    self.ypoti.spi.xfer([0x00+y//256, y%256], self.ypoti.speed_Hz, 0)
             else:             # take a parallel step (only in fast direction)  
                 x = x + pdx
                 y = y + pdy
-                if pdx != 0:
-                    self.xpoti.spi.xfer([0x00, x], self.xpoti.speed_Hz, 0)
-                if pdy != 0:
-                    self.ypoti.spi.xfer([0x00, y], self.ypoti.speed_Hz, 0)
+                if pdx != 0 and x in range(257):
+                    self.xpoti.spi.xfer([0x00+x//256, x%256], self.xpoti.speed_Hz, 0)
+                if pdy != 0 and y in range(257):
+                    self.ypoti.spi.xfer([0x00+y//256, y%256], self.ypoti.speed_Hz, 0)
 
     def figure(self, points):
         """ draws lines (edges) beteween the given points.
