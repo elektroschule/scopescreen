@@ -158,8 +158,8 @@ class Kante:
                          line_thickness)
 
     def zeichne_auf_scopescreen(self, scope_scr):
-        pts = [(self.src.x, self.src.y),
-               (self.tgt.x, self.tgt.y)]
+        pts = [(int(self.src.x), int(self.src.y)),
+               (int(self.tgt.x), int(self.tgt.y))]
         scope_scr.line(pts[0], pts[1])
 
 
@@ -195,7 +195,7 @@ class Kamera:
 def main():
     # init scopescreen with defaults
     sc = scopescreen.ScopeScreen(x_bus=0, x_device=1, y_bus=0, y_device=0)
-    sc.step = 3
+    sc.step = 1
     screen = Game(sc, width=256, height=256)
 
     # start game loop
