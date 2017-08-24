@@ -105,12 +105,12 @@ class Game:
 
             # Flächen nach Abstand sortieren
             flaechen_on_screen = sorted(flaechen_on_screen,
-                                        key=lambda fla: f.tiefe)
+                                        key=lambda fla: fla.tiefe)
             
         # Flächen in Sortierreihenfolge zeichnen
         for fl in flaechen_on_screen:
             fl.zeichne_auf_pygamescreen(self.screen)
-            #fl.zeichne_auf_scopescreen(self.scopescreen)
+            fl.zeichne_auf_scopescreen(self.scopescreen)
 
 
 class Punkt:
