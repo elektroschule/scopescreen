@@ -191,8 +191,9 @@ class Flaeche:
     def zeichne_auf_scopescreen(self, scope_scr: scopescreen.ScopeScreen):
         pts = []
 
-        for p in self.punkt:
-            pts.append([int(p.x), int(p.y)])
+        for p in self.punkte:
+            pts.append((int(p.x), int(p.y)))
+        pts.append((self.punkte[0].x, self.punkte[0].y)) # append the first point again
 
         scope_scr.figure(pts)
 
@@ -233,7 +234,8 @@ class Kamera:
 def main():
     # init scopescreen with defaults
     sc = scopescreen.ScopeScreen(x_bus=0, x_device=1, y_bus=0, y_device=0)
-    screen = Game(sc, width=800, height=600)
+    sc.step = 3
+    screen = Game(sc, width=256, height=256)
 
     # start game loop
     clock = pygame.time.Clock()
