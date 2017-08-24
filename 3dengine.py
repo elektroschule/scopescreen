@@ -13,7 +13,6 @@ class Game:
 
         self.points = []
         self.kanten = []
-        self.flaechen = []
 
         # computing center point
         self.cx = width / 2
@@ -50,39 +49,17 @@ class Game:
         self.kanten.append(Kante(self.points[2], self.points[7]))
         self.kanten.append(Kante(self.points[3], self.points[4]))
 
-        # creating faces - Dreiecke
-        #      3____2
-        #     /|   /|
-        #    / 0--/-1
-        #  4/_/__/7/
-        #   |/   |/
-        #   5____6
-        self.flaechen.append(Flaeche(self.points[0], self.points[1], self.points[2]))
-        self.flaechen.append(Flaeche(self.points[0], self.points[2], self.points[3]))
-        self.flaechen.append(Flaeche(self.points[0], self.points[1], self.points[6]))
-        self.flaechen.append(Flaeche(self.points[0], self.points[5], self.points[6]))
-        self.flaechen.append(Flaeche(self.points[0], self.points[3], self.points[4]))
-        self.flaechen.append(Flaeche(self.points[0], self.points[4], self.points[5]))
-        self.flaechen.append(Flaeche(self.points[7], self.points[2], self.points[3]))
-        self.flaechen.append(Flaeche(self.points[7], self.points[3], self.points[4]))
-        self.flaechen.append(Flaeche(self.points[7], self.points[2], self.points[1]))
-        self.flaechen.append(Flaeche(self.points[7], self.points[1], self.points[6]))
-        self.flaechen.append(Flaeche(self.points[7], self.points[4], self.points[5]))
-        self.flaechen.append(Flaeche(self.points[7], self.points[5], self.points[6]))
-
     def key_down(self, key, dt=1):
         self.cam.update(dt, key)
 
     def repaint(self):
         self.screen.fill((0, 0, 0))
 
-        flaechen_on_screen = []
-        for fl in self.flaechen:
-            fl_on_screen = Flaeche()
-            fl_on_screen.punkte = []
-            fl_on_screen.farbe = fl.farbe
-            fl_on_screen.tiefe = 0
-            for p in fl.punkte:
+        kanten_on_screen = []
+        for ka in self.kanten:
+            punkte = [ka.src, ka.tgt]
+            src_tgt = []
+            for p in punkte:
                 x = p.x
                 y = p.y
                 z = p.z
@@ -94,23 +71,20 @@ class Game:
                 x -= self.cam.pos.x
                 y -= self.cam.pos.y
                 z -= self.cam.pos.z
-                fl_on_screen.tiefe += x * x + y * y + z * z
+
                 # perspective
                 f = 0 if z == 0 else 200.0 / z
                 x *= f
                 y *= f
-                fl_on_screen.punkte.append(Punkt(self.cx + x, self.cy + y, 0))
+                src_tgt.append(Punkt(self.cx + x, self.cy + y, 0))
 
-            flaechen_on_screen.append(fl_on_screen)
+            assert len(src_tgt) == 2
+            kanten_on_screen.append(Kante(src_tgt[0], src_tgt[1]))
 
-            # Flächen nach Abstand sortieren
-            flaechen_on_screen = sorted(flaechen_on_screen,
-                                        key=lambda fla: fla.tiefe)
-            
-        # Flächen in Sortierreihenfolge zeichnen
-        for fl in flaechen_on_screen:
-            fl.zeichne_auf_pygamescreen(self.screen)
-            fl.zeichne_auf_scopescreen(self.scopescreen)
+        # Kanten zeichnen
+        for ka in kanten_on_screen:
+            ka.zeichne_auf_pygamescreen(self.screen)
+            ka.zeichne_auf_scopescreen(self.scopescreen)
 
 
 class Punkt:
@@ -166,36 +140,24 @@ class Punkt:
 
 
 class Kante:
-    def __init__(self, s, t):
+    def __init__(self, s, t, farbe=(255, 0, 0)):
+        assert isinstance(farbe, tuple)
+
         self.src = s
         self.tgt = t
-
-
-class Flaeche:
-    def __init__(self, p1=Punkt(), p2=Punkt(), p3=Punkt(),
-                 farbe=(255, 0, 0)):
-        assert isinstance(farbe, tuple), farbe
-
-        self.punkte = [p1, p2, p3]
         self.farbe = farbe
-        self.tiefe = 0
 
     def zeichne_auf_pygamescreen(self, pygame_screen, line_thickness=5):
-        pts = []
+        pts = [(self.src.x, self.src.y),
+               (self.tgt.x, self.tgt.y)]
 
-        for p in self.punkte:
-            pts.append([int(p.x), int(p.y)])
+        pygame.draw.line(pygame_screen, self.farbe, pts[0], pts[1],
+                         line_thickness)
 
-        pygame.draw.polygon(pygame_screen, self.farbe, pts, line_thickness)
-
-    def zeichne_auf_scopescreen(self, scope_scr: scopescreen.ScopeScreen):
-        pts = []
-
-        for p in self.punkte:
-            pts.append((int(p.x), int(p.y)))
-        pts.append((self.punkte[0].x, self.punkte[0].y)) # append the first point again
-
-        scope_scr.figure(pts)
+    def zeichne_auf_scopescreen(self, scope_scr):
+        pts = [(self.src.x, self.src.y),
+               (self.tgt.x, self.tgt.y)]
+        scope_scr.line(pts[0], pts[1])
 
 
 class Kamera:
