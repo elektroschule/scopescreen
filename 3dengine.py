@@ -124,8 +124,11 @@ class Punkt:
         b = Drehwinkel
         y/r = sin a => y = r sin a            _=y__           _=x_
         x/r = cos a => x = r cos a           /     \         /     \
-        y'/r = sin(a+b) => y' = r sin(a+b) = r sin a cos b + r cos a sin b = y cos b + x sin b
-        x'/r = cos(a+b) => x' = r cos(a+b) = r cos a cos b - r sin a sin b = x cos b - y sin b
+        y'/r = sin(a+b) => y' = r sin(a+b) = r sin a cos b + r cos a sin b 
+             = y cos b + x sin b
+        x'/r = cos(a+b) => x' = r cos(a+b) = r cos a cos b - r sin a sin b 
+             = x cos b - y sin b
+             
         ergo: x'= x cos b - y sin b und y' = y cos b + x sin b
         """
     @staticmethod
@@ -169,27 +172,23 @@ class Kamera:
     def update(self, dt, taste):
         # s = dt * 5
 
-        if (taste == pygame.K_w):
+        if taste == pygame.K_w:
             self.pos.z += dt
-        elif (taste == pygame.K_a):
+        elif taste == pygame.K_a:
             self.pos.x -= dt
-
-        elif (taste == pygame.K_s):
+        elif taste == pygame.K_s:
             self.pos.z -= dt
-
-        elif (taste == pygame.K_d):
+        elif taste == pygame.K_d:
             self.pos.x += dt
 
-        elif(taste == pygame.K_q):
+        elif taste == pygame.K_q:
             self.pos.y -= dt
-
-        elif(taste == pygame.K_e):
+        elif taste == pygame.K_e:
             self.pos.y += dt
 
-        elif(taste == pygame.K_y):
+        elif taste == pygame.K_y:
             self.roty -= 0.1
-
-        elif (taste == pygame.K_c):
+        elif taste == pygame.K_c:
             self.roty += 0.1
 
 
