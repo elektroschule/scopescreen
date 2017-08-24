@@ -25,7 +25,7 @@ class ObjReader:
 
 
 def main():
-    for obj in ["cube.obj", "cone.obj", "monkey.obj"]:
+    for obj in ["cube.obj", "cone.obj", "monkey.obj", "oszi.obj"]:
         print("reading " + obj)
         objr = ObjReader("ressources/" + obj)
         print(" vertices", str(objr.vs)[:70], "..")
