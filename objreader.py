@@ -25,13 +25,13 @@ class ObjReader:
 
 
 def main():
-    for obj in ["cube.obj", "cone.obj", "monkey.obj", "oszi.obj"]:
+    for obj in ["cube.obj", "cone.obj", "monkey.obj",
+                "oszi.obj", "four_cubes.obj"]:
         print("reading " + obj)
         objr = ObjReader("ressources/" + obj)
         print(" vertices", str(objr.vs)[:70], "..")
-        print(" ", len(objr.vs), "vertices", "..")
-        print(" lines", str(objr.ls)[:70])
-        print(" ", len(objr.ls), "lines")
+        print(" lines", str(objr.ls)[:70], "..")
+        print(" ", len(objr.vs), "vertices ", len(objr.ls), "lines")
 
 
 if __name__ == "__main__":
