@@ -2,10 +2,11 @@
 import pygame
 import sys
 import scopescreen
+import objreader
 
 
 class Game:
-    def __init__(self, scopescreen, width=300, height=200):
+    def __init__(self, scopescreen, width=300, height=200, filename=None):
         pygame.init()
         self.screen = pygame.display.set_mode((width, height))
         self.scopescreen = scopescreen
@@ -18,6 +19,20 @@ class Game:
         self.cx = width / 2
         self.cy = height / 2
 
+        if filename is not None:
+            print("Reading object from file", filename)
+            objr = objreader.ObjReader(filename)
+            for v in objr.vs:
+                self.points.append(Punkt(*v))
+            for l in objr.ls:
+                src, tgt = l
+                k = Kante(self.points[src], self.points[tgt])
+                self.kanten.append(k)
+
+        else:
+            self._add_sample_cube()
+
+    def _add_sample_cube(self):
         # creating cube with 8 points
         #      3____2
         #     /|   /|
@@ -196,7 +211,7 @@ def main():
     # init scopescreen with defaults
     sc = scopescreen.ScopeScreen(x_bus=0, x_device=1, y_bus=0, y_device=0)
     sc.step = 1
-    screen = Game(sc, width=256, height=256)
+    screen = Game(sc, width=256, height=256, filename="ressources/cube.obj")
 
     # start game loop
     clock = pygame.time.Clock()
