@@ -72,16 +72,12 @@ class Game:
 
         kanten_on_screen = []
         for ka in self.kanten:
-            punkte = [ka.src, ka.tgt]
             src_tgt = []
-            for p in punkte:
-                x = p.x
-                y = p.y
-                z = p.z
+            for p in [ka.src, ka.tgt]:
+                x, y, z = p.x, p.y, p.z
                 # rotate by camera angle
                 p_ = Punkt.rotate2d(x, z, self.cam.roty)
-                x = p_[0]
-                z = p_[1]
+                x, z = p_[0], p_[1]
                 # move by camera location
                 x -= self.cam.pos.x
                 y -= self.cam.pos.y
